@@ -13,11 +13,19 @@ const app = express();
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// Configure CORS
+const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : '*';
 app.use(cors({
-  origin: [process.env.CORS_ORIGIN],
-  credentials: true
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+
+// Health check route for Render
+app.get('/', (req, res) => {
+    res.send('Valentine Generator API is running! 💘');
+});
 
 app.post('/generate', async (req, res) => {
     const { userName, valentineName, gameIdea } = req.body;
@@ -119,6 +127,7 @@ app.post('/generate', async (req, res) => {
     }
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
