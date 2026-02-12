@@ -13,7 +13,10 @@ const app = express();
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-app.use(cors());
+app.use(cors({
+  origin: [process.env.CORS_ORIGIN],
+  credentials: true
+}));
 app.use(express.json());
 
 app.post('/generate', async (req, res) => {
